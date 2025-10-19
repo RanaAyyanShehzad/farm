@@ -27,38 +27,9 @@ config({
     path: "./data/config.env",
 });
 
-// Connect to database FIRST with retry logic
-const initializeDB = async () => {
-  try {
-    await connectDB();
-    console.log('Database initialization completed');
-  } catch (err) {
-    console.error('Database initialization failed:', err);
-  }
-};
-
-// Initialize database
-initializeDB();
-
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-
-// Database connection middleware
-app.use(async (req, res, next) => {
-  if (!isDBConnected()) {
-    try {
-      await connectDB();
-    } catch (error) {
-      console.error('Database reconnection failed:', error);
-      return res.status(503).json({ 
-        success: false, 
-        message: 'Database connection failed' 
-      });
-    }
-  }
-  next();
-});
 
 let allowedOrigins = process.env.ALLOWED_ORIGINS;
 
@@ -98,7 +69,8 @@ app.use("/api/chatbot", chatbotRoutes);
 // Error handling middleware
 app.use(errorMiddleware);
 
-// Setup cart cleanup job
+// Database connection and cart cleanup setup
+connectDB();
 setupCartCleanupJob();
 
 // Start server (for local development)
