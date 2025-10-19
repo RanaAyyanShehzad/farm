@@ -31,14 +31,6 @@ config({
 app.use(express.json());
 app.use(cookieParser());
 
-let allowedOrigins = process.env.ALLOWED_ORIGINS;
-
-if (allowedOrigins) {
-  allowedOrigins = allowedOrigins.split(',');
-} else {
-  allowedOrigins = ['http://localhost:3000']; // or your default origin(s)
-}
-
 app.use(cors({
   origin: function (origin, callback) {
     // Allow all origins
