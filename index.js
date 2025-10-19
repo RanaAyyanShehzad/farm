@@ -42,8 +42,18 @@ app.use(cors({
   exposedHeaders: ['Set-Cookie']
 }));
 
-// Connect to database
-connectDB();
+// Connect to database with proper await
+const initializeApp = async () => {
+  try {
+    await connectDB();
+    console.log('Database connected successfully');
+  } catch (error) {
+    console.error('Database connection failed:', error);
+  }
+};
+
+// Initialize database connection
+initializeApp();
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the Agro Backend API');
@@ -55,6 +65,18 @@ app.get('/api/test', (req, res) => {
     success: true, 
     message: 'API is working',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Test route to check token without database
+app.get('/api/test-token', (req, res) => {
+  const token = req.cookies.token || req.headers.authorization?.replace('Bearer ', '');
+  res.json({
+    success: true,
+    hasToken: !!token,
+    token: token ? token.substring(0, 20) + '...' : null,
+    cookies: req.cookies,
+    headers: req.headers.authorization
   });
 });
 app.use("/api/weather", weatherRoutes);
