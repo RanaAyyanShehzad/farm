@@ -13,7 +13,7 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import { errorMiddleware } from "./middlewares/error.js";
 
-import { connectDB } from "./data/database.js";
+import { connectDB, isDBConnected } from "./data/database.js";
 import { setupCartCleanupJob } from './jobs/cartCleanup.js';
 
 import weatherRoutes from "./routes/weatherRoutes.js";
@@ -27,14 +27,38 @@ config({
     path: "./data/config.env",
 });
 
-// Connect to database FIRST
-connectDB().catch(err => {
-  console.error('Database connection failed:', err);
-});
+// Connect to database FIRST with retry logic
+const initializeDB = async () => {
+  try {
+    await connectDB();
+    console.log('Database initialization completed');
+  } catch (err) {
+    console.error('Database initialization failed:', err);
+  }
+};
+
+// Initialize database
+initializeDB();
 
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+
+// Database connection middleware
+app.use(async (req, res, next) => {
+  if (!isDBConnected()) {
+    try {
+      await connectDB();
+    } catch (error) {
+      console.error('Database reconnection failed:', error);
+      return res.status(503).json({ 
+        success: false, 
+        message: 'Database connection failed' 
+      });
+    }
+  }
+  next();
+});
 
 let allowedOrigins = process.env.ALLOWED_ORIGINS;
 
