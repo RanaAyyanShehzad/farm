@@ -31,29 +31,26 @@ config({
 app.use(express.json());
 app.use(cookieParser());
 
+
+let allowedOrigins = process.env.ALLOWED_ORIGINS;
+
+if (allowedOrigins) {
+  allowedOrigins = allowedOrigins.split(',');
+} else {
+  allowedOrigins = ['http://localhost:3000']; // or your default origin(s)
+}
+
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow all origins
-    return callback(null, true);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"), false);
   },
-  credentials: true, // Enable credentials for cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
-  exposedHeaders: ['Set-Cookie']
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
-
 // Connect to database with proper await
-const initializeApp = async () => {
-  try {
-    await connectDB();
-    console.log('Database connected successfully');
-  } catch (error) {
-    console.error('Database connection failed:', error);
-  }
-};
-
-// Initialize database connection
-initializeApp();
+connectDB();
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the Agro Backend API');
