@@ -12,7 +12,7 @@ export const sendCookie = (user, role, res, message, statusCode = 200) => {
   .cookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // true for HTTPS
-    sameSite: 'lax', // Use lax for better compatibility
+    sameSite: 'none', // Allow cross-site cookies
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   })
   .json({

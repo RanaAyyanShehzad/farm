@@ -40,8 +40,11 @@ if (allowedOrigins) {
 }
 
 app.use(cors({
-  origin: '*', // Allow all origins
-  credentials: false, // Must be false when origin is '*'
+  origin: function (origin, callback) {
+    // Allow all origins
+    return callback(null, true);
+  },
+  credentials: true, // Enable credentials for cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
   exposedHeaders: ['Set-Cookie']
@@ -52,6 +55,15 @@ connectDB();
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the Agro Backend API');
+});
+
+// Test route for debugging
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'API is working',
+    timestamp: new Date().toISOString()
+  });
 });
 app.use("/api/weather", weatherRoutes);
 app.use('/api/v1/admin', adminRoutes);
