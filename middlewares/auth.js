@@ -6,7 +6,7 @@ import { supplier } from "../models/supplier.js";
 import { admin } from "../models/admin.js";
 export const isAuthenticated = async (req, res, next) => {
     try {
-        const { token } = req.cookies;
+        const token = req.cookies.token || req.headers.authorization?.replace('Bearer ', '');
         if (!token) return next(new ErrorHandler("Login First", 404));
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const role=decoded.role;
