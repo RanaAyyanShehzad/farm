@@ -13,7 +13,7 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import { errorMiddleware } from "./middlewares/error.js";
 
-import { connectDB, isDBConnected } from "./data/database.js";
+import { connectDB } from "./data/database.js";
 import { setupCartCleanupJob } from './jobs/cartCleanup.js';
 
 import weatherRoutes from "./routes/weatherRoutes.js";
@@ -49,7 +49,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie']
 }));
-
+connectDB();
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the Agro Backend API');
@@ -70,7 +70,7 @@ app.use("/api/chatbot", chatbotRoutes);
 app.use(errorMiddleware);
 
 // Database connection and cart cleanup setup
-connectDB();
+
 setupCartCleanupJob();
 
 // Start server (for local development)
