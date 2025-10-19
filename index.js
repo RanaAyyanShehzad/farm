@@ -27,6 +27,11 @@ config({
     path: "./data/config.env",
 });
 
+// Connect to database FIRST
+connectDB().catch(err => {
+  console.error('Database connection failed:', err);
+});
+
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -69,8 +74,7 @@ app.use("/api/chatbot", chatbotRoutes);
 // Error handling middleware
 app.use(errorMiddleware);
 
-// Database connection and cart cleanup setup
-connectDB();
+// Setup cart cleanup job
 setupCartCleanupJob();
 
 // Start server (for local development)
