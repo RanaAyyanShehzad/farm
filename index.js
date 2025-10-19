@@ -40,15 +40,14 @@ if (allowedOrigins) {
 }
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow all origins for now, or specify your frontend URL
-    return callback(null, true);
-  },
-  credentials: true,
+  origin: '*', // Allow all origins
+  credentials: false, // Must be false when origin is '*'
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
   exposedHeaders: ['Set-Cookie']
 }));
+
+// Connect to database
 connectDB();
 // Routes
 app.get('/', (req, res) => {

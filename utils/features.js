@@ -12,8 +12,8 @@ export const sendCookie = (user, role, res, message, statusCode = 200) => {
   .cookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // true for HTTPS
-    sameSite: 'none', // Allow cross-site cookies
-    maxAge:  1 * 60 * 60 * 1000 // 24 hours
+    sameSite: 'lax', // Use lax for better compatibility
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   })
   .json({
     success: true,
