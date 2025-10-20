@@ -11,11 +11,11 @@ export const sendCookie = (user, role, res, message, statusCode = 200) => {
     .status(statusCode)
     .cookie("token", token, {
       httpOnly: true,
-      secure: isProduction, // must be true on HTTPS
-      sameSite: isProduction ? "none" : "lax", // "none" needed for cross-site
+      secure: true, // must be true on HTTPS
+      sameSite: "none" , // "none" needed for cross-site
       path: "/",
       maxAge: 1 * 60 * 60 * 1000,
-    })
+    })           
     .json({
       success: true,
       message,
