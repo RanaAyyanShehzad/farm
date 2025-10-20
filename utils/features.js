@@ -5,15 +5,12 @@ export const sendCookie = (user, role, res, message, statusCode = 200) => {
     expiresIn: "60m",
   });
 
-  const isProduction = process.env.NODE_ENV === "production";
-
   res
     .status(statusCode)
     .cookie("token", token, {
       httpOnly: true,
       secure: true, // must be true on HTTPS
       sameSite: "none" , // "none" needed for cross-site
-      path: "/",
       maxAge: 1 * 60 * 60 * 1000,
     })           
     .json({

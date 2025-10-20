@@ -30,9 +30,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 // ✅ Configure CORS dynamically from .env
-let allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
-  : ["http://localhost:3000"];
+let allowedOrigins = "http://localhost:3000"
+  // ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+  // : ["http://localhost:3000"];
 
 app.use(
   cors({
@@ -50,6 +50,7 @@ app.use(
 // ✅ Connect to database
 connectDB();
 setupCartCleanupJob();
+app.set("trust proxy", 1);
 
 // ✅ Test route
 app.get("/", (req, res) => {
