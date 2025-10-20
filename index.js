@@ -26,8 +26,9 @@ const app = express();
 config({ path: "./data/config.env" });
 
 // ✅ Middlewares
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
+
 
 
 
