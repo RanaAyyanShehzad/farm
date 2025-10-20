@@ -29,23 +29,14 @@ config({ path: "./data/config.env" });
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Configure CORS dynamically from .env
-let allowedOrigins = "http://localhost:3000"
-  // ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
-  // : ["http://localhost:3000"];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser tools
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      console.warn(`🚫 CORS blocked origin: ${origin}`);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true, // ✅ allow cookies across origins
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  })
-);
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000", // or whatever your local frontend port is
+      credentials: true, // important!
+    })
+  );
 
 // ✅ Connect to database
 connectDB();

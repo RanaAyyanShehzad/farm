@@ -2,16 +2,17 @@ import jwt from "jsonwebtoken";
 // In your sendCookie function
 export const sendCookie = (user, role, res, message, statusCode = 200) => {
   const token = jwt.sign({ _id: user._id, role }, process.env.JWT_SECRET, {
-    expiresIn: "60m",
+    expiresIn: "24h",
   });
 
   res
     .status(statusCode)
     .cookie("token", token, {
       httpOnly: true,
-      secure: true, // must be true on HTTPS
-      sameSite: "none" , // "none" needed for cross-site
-      maxAge: 1 * 60 * 60 * 1000,
+      secure: true, // important since Vercel is HTTPS
+      sameSite: "none", // allow cross-origin
+      path: "/",// "none" needed for cross-site
+      maxAge: 24* 60 * 60 * 1000,
     })           
     .json({
       success: true,
